@@ -1,0 +1,147 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="styles.css" rel="stylesheet" type="text/css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap"
+    rel="stylesheet"
+  />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="meet-root">
+    <div class="meet-people">
+      <div class="meet-mainPerson">
+        <div class="meet-mainPerson-circle">
+          鐘揚
+          <div class="meet-mainPerson-setting">
+            <span class="material-icons" id="pin"> push_pin </span>
+            <span class="material-icons" id="screen"> dashboard </span>
+            <span class="material-icons" id="esc"> close_fullscreen </span>
+          </div>
+        </div>
+        <div class="meet-mainPerson-sound">
+          <span class="material-icons" style="font-size: 18px"> mic_off </span>
+        </div>
+        <div class="meet-mainPerson-anchor">
+          <div class="meet-mainPerson-pin">
+            <span class="material-icons"> push_pin </span>
+          </div>
+          <div class="meet-mainPerson-char">你</div>
+        </div>
+      </div>
+      <div class="meet-smallPeople">
+        <div class="meet-smallPerson">
+          <div class="meet-smallPerson-circle">
+            <img class="meet-smallPerson-image" src="./user1.png"" alt="圖片">
+          </div>
+          <div class="meet-smallPerson-sound">
+            <span class="material-icons" style="font-size: 18px"> mic_off </span>
+          </div>
+          <div class="meet-smallPerson-name">User1</div>
+        </div>
+        <div class="meet-smallPerson">
+          <div class="meet-smallPerson-circle">
+            <img class="meet-smallPerson-image" src="./user2.png"" alt="圖片">
+          </div>
+          <div class="meet-smallPerson-sound">
+            <span class="material-icons" style="font-size: 18px"> mic_off </span>
+          </div>
+          <div class="meet-smallPerson-name">User2</div>
+        </div>
+        <div class="meet-smallPerson">
+          <div class="meet-smallPerson-circle">
+            <img class="meet-smallPerson-image" src="./user3.jpg"" alt="圖片">
+          </div>
+          <div class="meet-smallPerson-sound">
+            <span class="material-icons" style="font-size: 18px"> mic_off </span>
+          </div>
+          <div class="meet-smallPerson-name">User3</div>
+        </div>
+        <div class="meet-smallPerson">
+          <div class="meet-smallPerson-circle">
+            <img class="meet-smallPerson-image" src="./user4.jpg"" alt="圖片">
+          </div>
+          <div class="meet-smallPerson-sound">
+            <span class="material-icons" style="font-size: 18px"> mic_off </span>
+          </div>
+          <div class="meet-smallPerson-name">User4</div>
+        </div>
+        <div class="meet-smallPerson">
+          <div class="meet-smallPerson-circle">
+            <img class="meet-smallPerson-image" src="./user5.jpg"" alt="圖片">
+          </div>
+          <div class="meet-smallPerson-sound">
+            <span class="material-icons" style="font-size: 18px"> mic_off </span>
+          </div>
+          <div class="meet-smallPerson-name">User5</div>
+        </div>
+      </div>
+    </div>
+    <div class="meet-bar">
+      <div class="meet-bar-left">
+        <div class="meet-bar-time">凌晨12:43</div>
+        <div class="meet-bar-divider">|</div>
+        <div class="meet-bar-title">Web Programming</div>
+      </div>
+      <div class="meet-bar-functions">
+        <div class="meet-bar-button-bg">
+          <div class="button-tip">開關麥克風</div>
+
+          <input id="0" type="checkbox" />
+          <label for="0"
+            ><span class="material-icons" id="mic-off"> mic_off </span>
+            <span class="material-icons" id="mic">mic</span></label
+          >
+        </div>
+        <div class="meet-bar-button-bg">
+          <div class="button-tip">開關鏡頭</div>
+          <input id="1" type="checkbox" />
+          <label for="1">
+            <span class="material-icons" id="cam"> videocam </span
+            ><span class="material-icons" id="cam-off">videocam_off</span></label
+          >
+        </div>
+        <div class="meet-bar-button-bg">
+          <div class="button-tip">舉手</div>
+          <input id="2" type="checkbox" />
+          <label for="2"> <span class="material-icons"> back_hand </span></label>
+        </div>
+        <div class="meet-bar-button-bg meet-bar-button-bg-static">
+          <div class="button-tip">分享螢幕</div>
+          <span class="material-icons"> present_to_all </span>
+        </div>
+        <div class="meet-bar-button-bg meet-bar-button-bg-static">
+          <div class="button-tip">更多</div>
+          <span class="material-icons"> more_vert </span>
+        </div>
+        <div class="meet-bar-button-bg meet-bar-button-bg-static" id="hang-up">
+          <div class="button-tip">結束通話</div>
+          <span class="material-icons"> call_end </span>
+        </div>
+      </div>
+      <div class="meet-bar-settings">
+        <div class="meet-bar-setting-bg">
+          <div class="button-tip">會議詳細資料</div>
+          <span class="material-icons"> info </span>
+        </div>
+        <div class="meet-bar-setting-bg">
+          <div class="button-tip">顯示所有參與者</div>
+          <span class="material-icons"> group </span>
+        </div>
+        <div class="meet-bar-setting-bg">
+          <div class="button-tip">與所有參與者進行即時通訊</div>
+          <span class="material-icons"> chat </span>
+        </div>
+        <div class="meet-bar-setting-bg">
+          <div class="button-tip">活動</div>
+          <span class="material-icons"> category </span>
+        </div>
+        <div class="meet-bar-setting-bg">
+          <div class="button-tip">主辦人控制項</div>
+          <span class="material-icons"> lock_person </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
