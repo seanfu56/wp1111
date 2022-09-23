@@ -331,6 +331,19 @@
 
 .meet-bar-setting-bg {
   margin: 5px;
+  display: inline;
+}
+
+.number {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  position: absolute;
+  top: 14%;
+  left: 31%;
+  background-color: #3d4043;
+  text-align: center;
+  line-height: 15px;
 }
 
 .meet-bar-setting-bg:hover .button-tip {
