@@ -1,0 +1,436 @@
+* {
+	color: white;
+	font-family: "Roboto", sans-serif;
+}
+
+@media (min-width: 200px) {
+	.meet-root {
+		width: 1240px;
+		height: 540px;
+		/*
+  width: 100%;
+  height: 100%;*/
+		align-content: flex-start;
+	}
+
+	.meet-people {
+		width: 100%;
+		height: 90%;
+		display: inline-flex;
+	}
+
+	.meet-mainPerson {
+		width: 70%;
+		height: 100%;
+		background-color: #202124;
+		display: inline-flex;
+		position: relative;
+	}
+
+	.meet-mainPerson-circle {
+		position: absolute;
+		width: 150px;
+		height: 150px;
+		border-radius: 50%;
+		background-color: white;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		display: inline;
+
+		/*文字格式*/
+		color: white;
+		line-height: 150px;
+		text-align: center;
+		font-family: "Noto Sans TC", sans-serif;
+		font-size: 50;
+	}
+
+	.meet-mainPerson-image {
+		width: 150px;
+		height: 150px;
+		border-radius: 50%;
+	}
+
+	.meet-mainPerson-setting {
+		display: none;
+	}
+
+	.meet-mainPerson:hover .meet-mainPerson-setting {
+		display: inline-flex;
+		justify-content: flex-start;
+		width: 100px;
+		height: 40px;
+		border-radius: 20px;
+		border-width: 0px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-color: rgba(0%, 0%, 0%, 30%);
+		z-index: 5;
+	}
+
+	#pin {
+		position: relative;
+		transform: translate(30%, 25%);
+	}
+
+	#screen {
+		position: relative;
+		transform: translate(50%, 25%);
+	}
+
+	#esc {
+		position: relative;
+		transform: translate(70%, 25%);
+	}
+
+	.meet-mainPerson:hover .meet-mainPerson-setting:hover {
+		background-color: rgba(0%, 0%, 0%, 70%);
+	}
+
+	.meet-mainPerson-sound {
+		width: 24px;
+		height: 24px;
+		position: relative;
+		top: 0%;
+		left: 80%;
+		transform: translate(0%, 100%);
+	}
+
+	.meet-mainPerson-anchor {
+		width: 264px;
+		height: 24px;
+		position: relative;
+		top: 90%;
+		left: 0%;
+		display: inline-flex;
+		align-items: flex-start;
+		justify-content: space-evenly;
+		transform: translate(0%, -100%);
+	}
+
+	.meet-mainPerson-name {
+		color: white;
+		width: 240px;
+		height: 24px;
+		line-height: 24px;
+		text-align: left;
+		font-family: "Noto Sans TC", sans-serif;
+		font-size: 24;
+	}
+
+	.meet-smallPeople {
+		width: 30%;
+		height: 100%;
+		background-color: #202124;
+		flex-direction: row;
+		flex-wrap: wrap;
+		display: flex;
+		justify-content: center;
+		align-content: flex-start;
+		padding-top: 30px;
+		overflow: scroll;
+	}
+
+	/*捲軸底色*/
+	.meet-smallPeople::-webkit-scrollbar-track {
+		background-color: #202124;
+	}
+	/*捲軸寬度*/
+	.meet-smallPeople::-webkit-scrollbar {
+		width: 6px;
+	}
+	/*捲軸本體顏色*/
+	.meet-smallPeople::-webkit-scrollbar-thumb {
+		background-color: #a8a8a8;
+	}
+
+	.meet-smallPerson {
+		width: 152px;
+		height: 122px;
+		background-color: #3d4043;
+		border-radius: 15px;
+		margin: 5px;
+		position: relative;
+		display: inline;
+	}
+
+	.meet-smallPerson-circle {
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		background-color: white;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	.meet-smallPerson-image {
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+	}
+
+	.meet-smallPerson-sound {
+		width: 10%;
+		height: 10%;
+		position: absolute;
+		top: 5%;
+		left: 85%;
+	}
+
+	.meet-smallPerson-name {
+		position: absolute;
+		top: 85%;
+		left: 5%;
+		color: white;
+		line-height: 14px;
+		text-align: center;
+		font-family: "Noto Sans TC", sans-serif;
+		font-size: 12;
+		text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	}
+}
+
+.meet-smallPerson-cancel {
+	width: 20px;
+	height: 20px;
+	position: absolute;
+	border-radius: 50%;
+	border-width: 0px;
+	top: 5%;
+	left: 5%;
+	background-color: transparent;
+}
+
+.meet-smallPerson-setting {
+	display: none;
+}
+
+.meet-smallPerson:hover .meet-smallPerson-setting {
+	display: inline-flex;
+	justify-content: flex-start;
+	width: 100px;
+	height: 40px;
+	border-radius: 20px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba(0%, 0%, 0%, 30%);
+	z-index: 5;
+}
+
+.pin {
+	position: relative;
+	transform: translate(30%, 25%);
+}
+
+.dashboard {
+	position: relative;
+	transform: translate(50%, 25%);
+}
+
+.close_fullscreen {
+	position: relative;
+	transform: translate(70%, 25%);
+}
+
+.meet-smallPerson:hover .meet-smallPerson-setting:hover {
+	background-color: rgba(0%, 0%, 0%, 70%);
+}
+
+.meet-bar {
+	width: 100%;
+	height: 10%;
+	background-color: #202124;
+	display: inline-flex;
+}
+
+.meet-bar-time {
+	margin: 5px;
+}
+
+.meet-bar-left {
+	width: 30%;
+	height: 100%;
+	display: inline-flex;
+	font-size: 12;
+	font-family: "Noto Sans TC", sans-serif;
+}
+
+.meet-bar-time {
+	font-family: "Noto Sans TC", sans-serif;
+}
+
+.meet-bar-divider {
+	color: rgba(100%, 100%, 100%, 50%);
+	font-family: "Noto Sans TC", sans-serif;
+}
+
+.meet-bar-title {
+	font-family: "Noto Sans TC", sans-serif;
+	width: 60%;
+	margin: 5px;
+}
+
+.meet-bar-functions {
+	width: 40%;
+	height: 100%;
+	display: inline-flex;
+	position: relative;
+	justify-content: center;
+}
+
+.meet-bar-button-bg {
+	width: 35px;
+	height: 35px;
+	position: relative;
+	display: inline;
+	border-radius: 50%;
+	margin: 5px;
+}
+
+.meet-bar-button-bg label {
+	width: 35px;
+	height: 35px;
+	display: inline-flex;
+	border-radius: 50%;
+	background-color: #3d4043;
+	transition: all 0.5s ease;
+	cursor: pointer;
+	position: relative;
+	top: 25%;
+	left: 0%;
+	transform: translate(0%, -80%);
+	z-index: 1;
+}
+
+.meet-bar-button-bg input[type="checkbox"] {
+	visibility: hidden;
+	z-index: 3;
+}
+.meet-bar-button-bg input[type="checkbox"]:checked + label {
+	background-color: #d85140;
+}
+
+.meet-bar-button-bg input[type="checkbox"]:checked + label > #mic {
+	display: none;
+}
+
+.meet-bar-button-bg input[type="checkbox"]:checked + label > #mic-off {
+	display: inline;
+}
+
+#mic-off {
+	display: none;
+}
+
+.meet-bar-button-bg input[type="checkbox"]:checked + label > #cam {
+	display: none;
+}
+
+.meet-bar-button-bg input[type="checkbox"]:checked + label > #cam-off {
+	display: inline;
+}
+
+#cam-off {
+	display: none;
+}
+
+.meet-bar-button-bg.meet-bar-button-bg-static {
+	width: 35px;
+	height: 35px;
+	position: relative;
+	display: inline;
+	border-radius: 50%;
+	margin: 5px;
+	background-color: #3d4043;
+}
+
+.meet-bar span {
+	position: relative;
+	left: 50%;
+	top: 65%;
+	transform: translate(-50%, -50%);
+	z-index: 2;
+}
+
+.meet-bar .meet-bar-button-bg-static span {
+	position: relative;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 2;
+}
+
+.button-tip {
+	display: none;
+}
+
+.meet-bar-button-bg:hover .button-tip {
+	display: inline;
+	position: absolute;
+	width: 80px;
+	top: -50%;
+	font-size: 8px;
+}
+#hang-up {
+	width: 70px;
+	height: 35px;
+	border-radius: 17.5px;
+	background-color: #d85140;
+}
+
+#hang-up-label {
+	width: 70px;
+	height: 35px;
+	border-radius: 17.5px;
+}
+
+.meet-bar-settings {
+	display: inline-flex;
+	width: 20%;
+	height: 100%;
+	position: relative;
+	left: 6%;
+	justify-content: space-around;
+}
+
+.meet-bar-setting-bg {
+	margin: 5px;
+	display: inline;
+}
+
+#add-person {
+	border: 0px;
+	display: inline-flex;
+	background-color: transparent;
+}
+
+.number {
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	position: absolute;
+	top: 14%;
+	left: 31%;
+	background-color: #3d4043;
+	text-align: center;
+	line-height: 15px;
+}
+
+.meet-bar-setting-bg:hover .button-tip {
+	display: inline;
+	position: absolute;
+	width: 80px;
+	top: -50%;
+	font-size: 8px;
+}
+
+.sound {
+	font-size: 12px;
+}
