@@ -15,16 +15,16 @@ import React, { useEffect, useState } from "react";
 const Wordle = ({ solution }) => {
   const { turn, curGuess, guesses, isCorrect, usedChars, handleKeyup, printTest } =
     useWordle(solution);
-  const [result, setResult] = useState('"You lose!!!! The answer is "' + solution + ".");
+  const [result, setResult] = useState(`You lose!!!! The answer is ${solution}.`);
   const [gameOver, setGameOver] = useState(false); // A bool whose default is false. It will be set to turn when the game is ended.
   const [win, setWin] = useState(false); // A bool whose default is false. It will be set to turn when the player wins the game.
-  useEffect(() => {
-    console.log("rerender");
-  });
+
   useEffect(() => {
     window.addEventListener("keyup", handleKeyup);
     console.log(isCorrect);
     if (isCorrect) {
+      setResult("You win!!!!");
+      setWin(true);
       setTimeout(() => {
         setGameOver(true);
         // TODO 6: Implementation for the result of the game
@@ -34,6 +34,7 @@ const Wordle = ({ solution }) => {
     } else if (turn > 5) {
       setTimeout(() => {
         setGameOver(true);
+        setResult(`You lose!!!! The answer is ${solution}.`);
         // TODO 6: Implementation for the result of the game
         // Hint: Add some conditions in `useEffect` to maintain `result`, `gameOver`, `win`.
         // Result format: "You lose!!!! The answer is windy." (If the solution is 'windy')
@@ -46,7 +47,7 @@ const Wordle = ({ solution }) => {
     <div className="Wordle-container">
       {/* TODO 6: Implementation for the result of the game */}
       <div className={!gameOver ? "Wordle-lose Hidden" : isCorrect ? "Wordle-win" : "Wordle-lose"}>
-        {!gameOver ? "" : isCorrect ? "You Win!!!!" : `You lose!!!! The answer is ${solution}`}
+        {!gameOver ? "" : result}
       </div>
 
       {/* TODO 2-1:  call `Board` and pass `turn`, `guesses`, `curGuess` into it  */}
