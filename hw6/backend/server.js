@@ -18,7 +18,6 @@ const dbs = mongoose.connection;
 dbs.on("error", (err) => console.log(err));
 dbs.once("open", async () => {
   await db.deleteAllScoreCards();
-  await db.newScoreCard("sean", "math", 100);
 });
 
 app.use("/", router);
