@@ -1,7 +1,7 @@
-import Header from './Header';
-import Body from './Body';
-import styled from 'styled-components';
-import Paper from '@material-ui/core/Paper';
+import Header from "./Header";
+import Body from "./Body";
+import styled from "styled-components";
+import Paper from "@material-ui/core/Paper";
 
 const Wrapper = styled.div`
   margin: auto;
