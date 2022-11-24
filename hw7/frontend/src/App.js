@@ -1,30 +1,24 @@
-import './App.css'
-import { Button, Input } from 'antd'
+import "./App.css";
+import { Button, Input, Tag, message } from "antd";
+import { useEffect, useState, useRef } from "react";
+import React from "react";
+import SignIn from "./containers/SignIn.tsx";
+import ChatRoom from "./containers/ChatRoom.tsx";
+import { useChat } from "./containers/hooks/useChat.tsx";
+import { ChatProvider } from "./containers/hooks/useChat";
+import styled from "styled-components";
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 500px;
+  margin: auto;
+`;
+const App = () => {
+  const { signedIn } = useChat();
+  return <Wrapper>{signedIn ? <ChatRoom /> : <SignIn />}</Wrapper>;
+};
 
-function App() {
-  return (
-    <div className="App">
-      <div className="App-title">
-        <h1>Simple Chat</h1>
-        <Button type="primary" danger >
-          Clear
-        </Button>
-      </div>
-      <div className="App-messages">
-        <p style={{ color: '#ccc' }}>
-          No messages...
-        </p>
-      </div>
-      <Input
-        placeholder="Username"
-        style={{ marginBottom: 10 }}
-      ></Input>
-      <Input.Search
-        enterButton="Send"
-        placeholder="Type a message here..."
-      ></Input.Search>
-    </div>
-  )
-}
-
-export default App
+export default App;
