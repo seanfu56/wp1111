@@ -6,21 +6,5 @@
   "scripts": {
     "start": "cd frontend && yarn start",
     "server": "cd backend && yarn server"
-  },
-  "dependencies": {
-    "@types/jest": "^29.2.3",
-    "@types/node": "^18.11.9",
-    "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.9",
-    "@types/websocket": "^1.0.5",
-    "@types/ws": "^8.5.3",
-    "antd": "^5.0.1",
-    "styled-components": "^5.3.6",
-    "typescript": "^4.9.3",
-    "websocket": "^1.0.34",
-    "ws": "^8.11.0"
-  },
-  "devDependencies": {
-    "@types/styled-components": "^5.1.26"
   }
 }

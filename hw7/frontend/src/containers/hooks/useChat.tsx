@@ -10,6 +10,16 @@ type StatusType = {
   msg: string;
 };
 
+type addChatBoxType = {
+  me: string;
+  to: string;
+};
+
+type sendNewChatBoxType = {
+  name: string;
+  users: string[];
+};
+
 type ContextType = {
   status: StatusType | undefined;
   me: string;
@@ -18,8 +28,18 @@ type ContextType = {
   setSignedIn: (s: boolean) => void;
   messages: Message[];
   sendMessage: (m: Message) => void;
+  addChatBox: (u: addChatBoxType) => void;
   clearMessages: () => void;
-  displayStatus: (s: StatusType | undefined) => void;
+  displayStatus: (s: StatusType | undefined | string) => void;
+};
+
+type sentDataType = {
+  task: string;
+  payload?: Message | sendNewChatBoxType;
+};
+
+const makeName = (name: string, to: string) => {
+  return [name, to].sort().join("_");
 };
 
 const ChatContext = createContext<ContextType>({
@@ -30,16 +50,23 @@ const ChatContext = createContext<ContextType>({
   setSignedIn: (s: boolean) => {},
   messages: [],
   sendMessage: (m: Message) => {},
+  addChatBox: (u: addChatBoxType) => {},
   clearMessages: () => {},
-  displayStatus: (s: StatusType | undefined) => {},
+  displayStatus: (s: StatusType | undefined | string) => {},
 });
 const ChatProvider = (props: any) => {
   const [status, setStatus] = useState({});
   const [me, setMe] = useState(savedMe || "");
   const [signedIn, setSignedIn] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+
   // const client = new WebSocket("ws://localhost:4000");
-  const sentData = async (data: [string, Message?]) => {
+  useEffect(() => {
+    if (signedIn) {
+      localStorage.setItem(LOCALSTORAGE_KEY, me);
+    }
+  }, [me, signedIn]);
+  const sentData = async (data: sentDataType) => {
     await client.send(JSON.stringify(data));
   };
   client.onmessage = (byteString) => {
@@ -52,6 +79,7 @@ const ChatProvider = (props: any) => {
       }
       case "output": {
         setMessages(() => [...messages, ...payload]);
+        console.log([...messages, ...payload]);
         break;
       }
       case "status": {
@@ -67,20 +95,29 @@ const ChatProvider = (props: any) => {
     }
   };
   const clearMessages = () => {
-    sentData(["clear"]);
+    sentData({ task: "clear" });
   };
-  const sendMessage = (payload: Message) => {
-    sentData(["input", payload]);
-    /*
-    const newMessage: Message[] = [...messages];
-    newMessage.push(payload);
-    setMessages(newMessage);
-    setStatus({ type: "success", msg: "Message sent." });*/
-    console.log(payload);
-    //TODO : update messages and status
+  const sendMessage = ({ name, to, body }: Message) => {
+    if (message || name || to) {
+      sentData({ task: "MESSAGE", payload: { name, to, body } });
+    }
+  };
+
+  const addChatBox = ({ me, to }: addChatBoxType) => {
+    const name: string = makeName(me, to);
+    if (me && to) {
+      const payload: sendNewChatBoxType = {
+        name: name,
+        users: [me, to],
+      };
+      sentData({ task: "CHAT", payload: payload });
+    }
+  };
+
+  const startChat = (name: string, to: string) => {
+    sentData({ task: "chat" });
   };
   const displayStatus = (s: StatusType | undefined) => {
-    //console.log(s);
     if (s?.msg) {
       const { type, msg } = s;
       const content = { content: msg, duration: 0.5 };
@@ -107,6 +144,7 @@ const ChatProvider = (props: any) => {
         setMe,
         setSignedIn,
         sendMessage,
+        addChatBox,
         clearMessages,
         displayStatus,
       }}

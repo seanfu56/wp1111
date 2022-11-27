@@ -1,5 +1,6 @@
 type Message = {
   name: string;
+  to: string;
   body: string;
 };
 

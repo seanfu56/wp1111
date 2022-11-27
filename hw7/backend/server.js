@@ -6,6 +6,7 @@ import dotenv from "dotenv-defaults";
 import mongoose from "mongoose";
 import http from "http";
 import websocket from "ws";
+import { v4 as uuidv4 } from "uuid";
 mongo.connect();
 dotenv.config();
 
@@ -16,8 +17,9 @@ const db = mongoose.connection;
 db.once("open", () => {
   console.log("MongoDB connected!");
   wss.on("connection", (ws) => {
+    // ws.id = uuidv4();
+    // ws.box = "";
     // Define WebSocket connection logic
-    wsConnect.initData(ws);
     ws.onmessage = wsConnect.onMessage(wss, ws);
   });
 });

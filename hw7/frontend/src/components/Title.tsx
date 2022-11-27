@@ -16,13 +16,15 @@ type TitleProps = {
   name: string;
 };
 
-const Title = ({ name }: TitleProps) => (
-  <Wrapper>
-    <h1>
-      {name ? `${name}'s ` : "My "}
-      Chat Room
-    </h1>
-  </Wrapper>
-);
+const Title = ({ name }: TitleProps) => {
+  return (
+    <Wrapper>
+      <h1>
+        {name ? `${name}'s ` : "My "}
+        Chat Room
+      </h1>
+    </Wrapper>
+  );
+};
 
 export default Title;

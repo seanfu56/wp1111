@@ -17,8 +17,8 @@ const Wrapper = styled.div`
   margin: auto;
 `;
 const App = () => {
-  const { signedIn } = useChat();
-  return <Wrapper>{signedIn ? <ChatRoom /> : <SignIn />}</Wrapper>;
+  const { me, signedIn } = useChat();
+  return <Wrapper>{signedIn ? <ChatRoom me={me} /> : <SignIn />}</Wrapper>;
 };
 
 export default App;
