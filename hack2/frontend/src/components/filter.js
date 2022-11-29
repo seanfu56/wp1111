@@ -42,7 +42,13 @@ const Filter = ({
 
   const modifyFilter = (key, filter) => {
     // TODO Part II-1: change filter state on clicking the pertaining checkboxes
-
+    if (filter.includes(key)) {
+      filter = filter.filter((e) => {
+        return e !== key;
+      });
+    } else {
+      filter.push(key);
+    }
     return filter;
   };
 

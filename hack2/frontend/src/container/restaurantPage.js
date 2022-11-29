@@ -22,19 +22,35 @@ const RestaurantPage = () => {
   const [info, setInfo] = useState({});
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [rating, setRating] = useState(0);
   const getInfo = async () => {
     // TODO Part III-2: get a restaurant's info
     const {
       data: { contents },
-    } = await instance.get("/getInfo");
+    } = await instance.get("/getInfo", { params: { id: id } });
+    console.log(contents);
     setInfo(contents);
   };
   const getComments = async () => {
     // TODO Part III-3: get a restaurant's comments
+    const {
+      data: { contents },
+    } = await instance.get("/getCommentsByRestaurantId", { params: { restaurantId: id } });
+    console.log("comment=", contents);
+    setComments(contents);
+    if (contents.length !== 0) {
+      let sum = 0;
+      for (let i = 0; i < contents.length; i++) {
+        sum += contents[i].rating;
+      }
+      let avg = sum / contents.length;
+      setRating(avg);
+    }
   };
   useEffect(() => {
     if (Object.keys(info).length === 0) {
       getInfo();
+      getComments();
     }
   }, []);
 
@@ -43,25 +59,10 @@ const RestaurantPage = () => {
   }, [comments]);
 
   /* TODO Part III-2-b: calculate the average rating of the restaurant */
-  let rating = 0;
 
   return (
     <div className="restaurantPageContainer">
       {Object.keys(info).length === 0 ? <></> : <Information info={info} rating={rating} />}
-      <div className="infoRow">
-        {info.tag.map((t) => (
-          <div className="tag" key={t}>
-            {t}
-          </div>
-        ))}
-      </div>
-      <p>business hour</p>
-      <div className="business time">
-        <div className="single day">
-          <div className="day"></div>
-          <div className="time"></div>
-        </div>
-      </div>
       <Comment
         restaurantId={id}
         comments={comments}

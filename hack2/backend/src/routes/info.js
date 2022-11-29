@@ -25,14 +25,50 @@ exports.GetSearch = async (req, res) => {
   // When fail,
   //   do `res.status(403).send({ message: 'error', contents: ... })`
 
-  // TODO: Part I-3-a: find the information to all restaurants
+  // TODO Part I-3-a: find the information to all restaurants
   try {
-    const data = await Info.find({
-      priceFilter: priceFilter,
-      mealFilter: mealFilter,
-      typeFilter: typeFilter,
-    });
-    data.sort((x, y) => {
+    const data = await Info.find({});
+    //console.log(priceFilter, mealFilter, typeFilter);
+    // TODO Part II-2-a: revise the route so that the result is filtered with priceFilter, mealFilter and typeFilter
+    //pricefilter
+    let newdata = data;
+    if (priceFilter !== undefined) {
+      newdata = newdata.filter((e) => {
+        return priceFilter.includes(`${e.price}`);
+      });
+    }
+    // console.log(newdata);
+
+    //mealfilter
+    if (mealFilter !== undefined) {
+      newdata = newdata.filter((e) => {
+        //console.log(e.tag);
+        for (let i = 0; i < e.tag.length; i++) {
+          const t = e.tag[i];
+          if (mealFilter.includes(t)) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+
+    //typefilter
+    if (typeFilter !== undefined) {
+      newdata = newdata.filter((e) => {
+        for (let i = 0; i < e.tag.length; i++) {
+          const t = e.tag[i];
+          if (typeFilter.includes(t)) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+
+    // TODO Part II-2-b: revise the route so that the result is sorted by sortBy
+    //sort
+    newdata.sort((x, y) => {
       if (sortBy === "price") {
         if (x.price >= y.price) {
           return 1;
@@ -47,13 +83,11 @@ exports.GetSearch = async (req, res) => {
         }
       }
     });
-    res.status(200).send({ message: "success", contents: data });
+    // console.log(newdata);
+    res.status(200).send({ message: "success", contents: newdata });
   } catch (e) {
     res.status(403).send({ message: "error", contents: e.message });
   }
-
-  // TODO Part II-2-a: revise the route so that the result is filtered with priceFilter, mealFilter and typeFilter
-  // TODO Part II-2-b: revise the route so that the result is sorted by sortBy
 };
 
 exports.GetInfo = async (req, res) => {
@@ -63,6 +97,7 @@ exports.GetInfo = async (req, res) => {
     const data = await Info.findOne({
       id: id,
     });
+    console.log(data);
     res.status(200).send({ message: "success", contents: data });
   } catch (e) {
     res.status(403).send({ message: "error", contents: e.message });

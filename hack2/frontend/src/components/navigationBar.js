@@ -40,7 +40,7 @@ const NavBar = () => {
     // FIXME: - Modify below
     navigate("/search", {
       state: {
-        priceFilter: priceFilter,
+        priceFilter: changeDollarSignToInt(priceFilter),
         mealFilter: mealFilter,
         typeFilter: typeFilter,
         sortBy: sortMethod,
