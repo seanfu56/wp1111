@@ -50,18 +50,11 @@ const SearchPage = () => {
     return priceText;
   };
 
-  const des = () => {
-    const arr = [];
-    state.mealFilter.forEach((e) => {
-      arr.push(e);
-    });
-    state.typeFilter.forEach((e) => {
-      arr.push(e);
-    });
-    const str = "";
-    for (i = 0; i < arr.length; i++) {
-      str += arr[i];
-      if (i !== arr.length - 1) {
+  const des = (item) => {
+    let str = "";
+    for (let i = 0; i < item.tag.length; i++) {
+      str += item.tag[i];
+      if (i !== item.tag.length - 1) {
         str += ", ";
       }
     }
@@ -83,7 +76,7 @@ const SearchPage = () => {
                 <p className="price">{getPrice(item.price)}</p>
                 <p className="distance">{`${item.distance / 1000} km`}</p>
               </div>
-              <p className="description">{`${des()}`}</p>
+              <p className="description">{des(item)}</p>
             </div>
           </div>
         </>
