@@ -1,20 +1,12 @@
 import styled from "styled-components";
-import { Button, Input, Tag, message, InputRef } from "antd";
-import { useState, useRef, useEffect, Ref } from "react";
+import { Input, InputRef } from "antd";
+import { useState, useRef, useEffect } from "react";
 import React from "react";
 import { useChat } from "./hooks/useChat";
 import Title from "../components/Title";
-import Message from "../messageType";
 import "../App.css";
 import { Tabs } from "antd";
 import ChatModal from "../components/ChatModal";
-import MessageTem from "../components/Message";
-
-type chatBoxType = {
-  label: string;
-  children: JSX.Element;
-  key: string;
-};
 
 const ChatBoxesWrapper = styled(Tabs)`
   width: 100%;
@@ -26,98 +18,47 @@ const ChatBoxesWrapper = styled(Tabs)`
   overflow: auto;
 `;
 
-const FootRef = styled.div`
-  height: 0px;
-`;
 type ChatRoomProps = {
   me: string;
 };
 const ChatRoom = ({ me }: ChatRoomProps) => {
-  const { status, messages, sendMessage, clearMessages, displayStatus, addChatBox } = useChat();
+  const {
+    status,
+    chatBoxes,
+    friend,
+    setFriend,
+    sendMessage,
+    displayStatus,
+    addChatBox,
+    setChatBoxes,
+  } = useChat();
   const [body, setBody] = useState("");
   const bodyref = useRef<InputRef>(null);
-  const msgFooter = useRef<HTMLDivElement>(null);
-  const [chatBoxes, setChatBoxes] = useState<chatBoxType[]>([]);
-  const [activeKey, setActiveKey] = useState<string>("");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  //const [msgSent, setMsgSent] = useState<boolean>(false);
-  const renderChat = (chat: Message[]) => {
-    const children: JSX.Element =
-      chat.length === 0 ? (
-        <p style={{ color: "#ccc" }}>No messages...</p>
-      ) : (
-        <div>
-          {chat.map(({ name, body }, i) => {
-            console.log(name);
-            return (
-              <div key={i}>
-                <MessageTem isMe={name === me} message={body} />
-              </div>
-            );
-          })}
-        </div>
-      );
-    return children;
-  };
-
-  const extractChat = (friend: string) => {
-    return renderChat(
-      messages.filter((message) => {
-        return (
-          (message.to === friend && message.name === me) ||
-          (message.to === me && message.name === friend)
-        );
-      })
-    );
-  };
 
   useEffect(() => {
     displayStatus(status);
-    scrollToBottom();
     console.log("status changed", status);
-  }, [status]);
+  }, [status, displayStatus]);
 
-  useEffect(() => {
-    let refChatBox = [...chatBoxes];
-    refChatBox.forEach((e) => (e.children = extractChat(activeKey)));
-    setChatBoxes(refChatBox);
-  }, [messages]);
-
-  useEffect(() => {
-    let refChatBox = [...chatBoxes];
-    refChatBox.forEach((e) => (e.children = extractChat(activeKey)));
-    setChatBoxes(refChatBox);
-    console.log("activeKey changed");
-  }, [activeKey]);
-
-  const scrollToBottom = () => {
-    msgFooter.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-  /*
-  useEffect(() => {
-    scrollToBottom();
-    setMsgSent(false);
-  }, [msgSent]);*/
-  //TODO: connect to the backend
-  const removeChatBox = (targetKey: string, activeKey: string) => {
-    const index = chatBoxes.findIndex(({ key }) => key === activeKey);
+  const removeChatBox = (targetKey: string, friend: string) => {
+    const index = chatBoxes.findIndex(({ key }) => key === friend);
     const newChatBoxes = chatBoxes.filter(({ key }) => key !== targetKey);
     setChatBoxes(newChatBoxes);
-    return activeKey
-      ? activeKey === targetKey
+    return friend
+      ? friend === targetKey
         ? index === 0
           ? ""
           : chatBoxes[index - 1].key
-        : activeKey
+        : friend
       : "";
   };
-  //TODO: connect to the backend
   const createChatBox = (friend: string) => {
     if (chatBoxes.some(({ key }) => key === friend)) {
       throw new Error(friend + "'s chat box has already opened.");
     } else {
-      const chat = extractChat(friend);
-      setChatBoxes([...chatBoxes, { label: friend, children: chat, key: friend }]);
+      setChatBoxes([...chatBoxes, { label: friend, key: friend, children: <></>, messages: [] }]);
+      console.log(chatBoxes.length);
       //setMsgSent(true);
       addChatBox({ me: me, to: friend });
       return friend;
@@ -128,24 +69,21 @@ const ChatRoom = ({ me }: ChatRoomProps) => {
       <Title name={me} />
       <>
         <ChatBoxesWrapper
+          className="chatbox-wrapper"
           type="editable-card"
           onChange={(key) => {
-            setActiveKey(key);
-            extractChat(key);
+            setFriend(key);
           }}
-          activeKey={activeKey}
+          activeKey={friend}
           onEdit={(targetKey, action) => {
             if (action === "add") {
               setModalOpen(true);
             } else if (action === "remove") {
-              setActiveKey(removeChatBox(targetKey as string, activeKey));
+              setFriend(removeChatBox(targetKey as string, friend));
             }
           }}
           items={chatBoxes}
-        >
-          {/* {displayMessages(messages)} */}
-          <FootRef ref={msgFooter} />
-        </ChatBoxesWrapper>
+        ></ChatBoxesWrapper>
         <Input.Search
           ref={bodyref as React.RefObject<InputRef>}
           value={body}
@@ -160,17 +98,14 @@ const ChatRoom = ({ me }: ChatRoomProps) => {
               });
               return;
             }
-            //TODO: change the receiver
-            console.log(me, activeKey, msg);
-            sendMessage({ name: me, to: activeKey, body: msg });
+            sendMessage({ name: me, to: friend, body: msg });
             setBody("");
           }}
         ></Input.Search>
         <ChatModal
           open={modalOpen}
           onCreate={(name) => {
-            setActiveKey(createChatBox(name));
-            extractChat(name);
+            setFriend(createChatBox(name));
             setModalOpen(false);
           }}
           onCancel={() => {

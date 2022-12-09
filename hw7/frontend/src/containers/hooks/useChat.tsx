@@ -1,6 +1,7 @@
-import { useState, useEffect, createContext, useContext, useRef } from "react";
-import Message from "../../messageType";
+import { useState, useEffect, createContext, useContext } from "react";
+import { Message, MessageSend } from "../../messageType";
 import { message } from "antd";
+import TabPane from "../../components/TabPane";
 
 const LOCALSTORAGE_KEY = "save-me";
 const savedMe = localStorage.getItem(LOCALSTORAGE_KEY);
@@ -20,14 +21,24 @@ type sendNewChatBoxType = {
   users: string[];
 };
 
+type chatBoxType = {
+  label: string;
+  messages: Message[];
+  key: string;
+  children: JSX.Element;
+};
+
 type ContextType = {
+  friend: string;
+  setFriend: (s: string) => void;
   status: StatusType | undefined;
   me: string;
   setMe: (s: string) => void;
+  chatBoxes: chatBoxType[];
+  setChatBoxes: (c: chatBoxType[]) => void;
   signedIn: boolean;
   setSignedIn: (s: boolean) => void;
-  messages: Message[];
-  sendMessage: (m: Message) => void;
+  sendMessage: (m: MessageSend) => void;
   addChatBox: (u: addChatBoxType) => void;
   clearMessages: () => void;
   displayStatus: (s: StatusType | undefined | string) => void;
@@ -35,7 +46,7 @@ type ContextType = {
 
 type sentDataType = {
   task: string;
-  payload?: Message | sendNewChatBoxType;
+  payload?: Message | sendNewChatBoxType | MessageSend;
 };
 
 const makeName = (name: string, to: string) => {
@@ -43,13 +54,17 @@ const makeName = (name: string, to: string) => {
 };
 
 const ChatContext = createContext<ContextType>({
+  friend: "",
+  setFriend: (S: string) => {},
   status: undefined,
   me: "",
+  chatBoxes: [],
+  setChatBoxes: (c: chatBoxType[]) => {},
   setMe: (s: string) => {},
   signedIn: false,
   setSignedIn: (s: boolean) => {},
-  messages: [],
-  sendMessage: (m: Message) => {},
+
+  sendMessage: (m: MessageSend) => {},
   addChatBox: (u: addChatBoxType) => {},
   clearMessages: () => {},
   displayStatus: (s: StatusType | undefined | string) => {},
@@ -58,9 +73,8 @@ const ChatProvider = (props: any) => {
   const [status, setStatus] = useState({});
   const [me, setMe] = useState(savedMe || "");
   const [signedIn, setSignedIn] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  // const client = new WebSocket("ws://localhost:4000");
+  const [chatBoxes, setChatBoxes] = useState<chatBoxType[]>([]);
+  const [friend, setFriend] = useState<string>("");
   useEffect(() => {
     if (signedIn) {
       localStorage.setItem(LOCALSTORAGE_KEY, me);
@@ -71,15 +85,30 @@ const ChatProvider = (props: any) => {
   };
   client.onmessage = (byteString) => {
     const { data } = byteString;
-    const [task, payload]: [string, Message[]] = JSON.parse(data);
+    const [task, payload]: [string, Array<Message>] = JSON.parse(data);
     switch (task) {
-      case "init": {
-        setMessages(payload);
+      case "output": {
+        let index = -1;
+        for (let i = 0; i < chatBoxes.length; i++) {
+          if (chatBoxes[i].label === friend) {
+            index = i;
+          }
+        }
+        let chatBoxes_R = [...chatBoxes];
+        const newMessage = [...chatBoxes[index].messages, ...payload];
+        chatBoxes_R[index].messages = newMessage;
+        chatBoxes_R[index].children = <TabPane message={newMessage} me={me} />;
+        setChatBoxes(chatBoxes_R);
         break;
       }
-      case "output": {
-        setMessages(() => [...messages, ...payload]);
-        console.log([...messages, ...payload]);
+      case "newchat": {
+        let chatBoxes_R: chatBoxType[] = [...chatBoxes];
+        chatBoxes_R = chatBoxes_R.slice(0, -1);
+        let newChatBox: chatBoxType = chatBoxes[chatBoxes.length - 1];
+        newChatBox.messages = [...payload];
+        newChatBox.children = <TabPane message={payload} me={me} />;
+        chatBoxes_R.push(newChatBox);
+        setChatBoxes(chatBoxes_R);
         break;
       }
       case "status": {
@@ -87,7 +116,6 @@ const ChatProvider = (props: any) => {
         break;
       }
       case "cleared": {
-        setMessages([]);
         break;
       }
       default:
@@ -97,7 +125,8 @@ const ChatProvider = (props: any) => {
   const clearMessages = () => {
     sentData({ task: "clear" });
   };
-  const sendMessage = ({ name, to, body }: Message) => {
+
+  const sendMessage = ({ name, to, body }: MessageSend) => {
     if (message || name || to) {
       sentData({ task: "MESSAGE", payload: { name, to, body } });
     }
@@ -114,9 +143,6 @@ const ChatProvider = (props: any) => {
     }
   };
 
-  const startChat = (name: string, to: string) => {
-    sentData({ task: "chat" });
-  };
   const displayStatus = (s: StatusType | undefined) => {
     if (s?.msg) {
       const { type, msg } = s;
@@ -140,9 +166,12 @@ const ChatProvider = (props: any) => {
         status,
         me,
         signedIn,
-        messages,
+        chatBoxes,
+        friend,
+        setFriend,
         setMe,
         setSignedIn,
+        setChatBoxes,
         sendMessage,
         addChatBox,
         clearMessages,

@@ -1,7 +1,12 @@
 type Message = {
   name: string;
+  body: string;
+};
+
+type MessageSend = {
+  name: string;
   to: string;
   body: string;
 };
 
-export default Message;
+export type { Message, MessageSend };

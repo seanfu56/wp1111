@@ -1,4 +1,4 @@
-import { UserModel, MessageModel, ChatBoxModel } from "./models/message.js";
+import { MessageModel, ChatBoxModel } from "./models/message.js";
 const sendData = (data, ws) => {
   ws.send(JSON.stringify(data));
 };
@@ -11,40 +11,17 @@ const broadcastMessage = (wss, data, status) => {
     sendStatus(status, client);
   });
 };
-
-const constructUsers = async (name) => {
-  let exist = await UserModel.findOne({ name: name });
-  if (!exist) {
-    let user = new UserModel({ name });
-    user.save();
-    return user;
-  }
-};
-
 const makeName = (name, to) => {
   return [name, to].sort().join("_");
 };
 
-const validateChatBox = async (name, participants) => {
-  const name1 = participants[0];
-  let user1 = await UserModel.findOne({ name: name1 });
-  if (!user1) {
-    console.log("construct a user1");
-    user1 = await constructUsers(name1);
-  }
-  const name2 = participants[1];
-  let user2 = await UserModel.findOne({ name: name2 });
-  if (!user2) {
-    console.log("construct a user2");
-    user2 = await constructUsers(name2);
-  }
+const validateChatBox = async (name, users) => {
   let box = await ChatBoxModel.findOne({ name: name });
   if (!box) {
     console.log("construct a new chatbox");
-    box = await new ChatBoxModel({ name: name, users: [user1, user2] }).save();
+    box = await new ChatBoxModel({ name: name, users: users }).save();
   }
-  //console.log(box);
-  return box.populate(["users", { path: "messages", populate: ["sender", "receiver"] }]);
+  return box.populate(["users", { path: "messages", populate: ["sender"] }]);
 };
 
 export default {
@@ -66,16 +43,10 @@ export default {
       case "MESSAGE": {
         const { name, to, body } = payload;
         const chatboxname = makeName(to, name);
-        const chatbox = await ChatBoxModel.findOne({ name: chatboxname });
-        const sender = await UserModel.findOne({ name: name });
-        const receiver = await UserModel.findOne({ name: to });
         const message = new MessageModel({
-          chatBox: chatbox,
-          sender: sender,
-          receiver: receiver,
+          sender: name,
           body: body,
         });
-        //console.log(message);
         try {
           await message.save();
           console.log("success save new message");
@@ -98,16 +69,16 @@ export default {
         } catch (e) {
           throw new Error("ChatBox DB save error: " + e);
         }
+        console.log(validChatBox.name);
         let messagesReturn = [];
         validChatBox.messages.forEach((message) => {
           messagesReturn.push({
-            name: message.sender.name,
-            to: message.receiver.name,
+            name: message.sender,
             body: message.body,
           });
         });
         //console.log(messagesReturn);
-        sendData(["output", messagesReturn], ws);
+        sendData(["newchat", messagesReturn], ws);
         sendStatus({ type: "success", msg: "Message sent" }, ws);
         break;
       }
@@ -116,9 +87,6 @@ export default {
       case "CLEAR": {
         MessageModel.deleteMany({}, () => {
           broadcastMessage(wss, ["output"], { type: "info", msg: "Message cache cleared." });
-          /*
-          sendData(["cleared"], ws);
-          sendStatus({ type: "info", msg: "Message cache cleared." }, ws);*/
         });
         break;
       }

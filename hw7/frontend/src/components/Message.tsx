@@ -27,7 +27,6 @@ type messageProps = {
 };
 
 const MessageTem = ({ isMe, message }: messageProps) => {
-  console.log("message", isMe);
   return (
     <StyledMessage isMe={isMe}>
       <p>{message}</p>
