@@ -10,18 +10,12 @@ import {
   returnChatBoxType,
 } from "../../type";
 import { message } from "antd";
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 
-import {
-  CREATE_MESSAGE_MUTATION,
-  CREATE_CHATBOX_MUTATION,
-  CHATBOX_QUERY,
-  MESSAGE_SUBSCRIPTION,
-} from "../../graphql/index";
+import { CREATE_MESSAGE_MUTATION, CREATE_CHATBOX_MUTATION } from "../../graphql/index";
 
 const LOCALSTORAGE_KEY = "save-me";
 const savedMe = localStorage.getItem(LOCALSTORAGE_KEY);
-// const client = new WebSocket("ws://localhost:4000");
 
 type ContextType = {
   friend: string;
@@ -38,15 +32,6 @@ type ContextType = {
   clearMessages: () => void;
   displayStatus: (s: StatusType | undefined | string) => void;
   startChat: (s: startChatType) => returnChatBoxType;
-};
-
-type sentDataType = {
-  task: string;
-  payload?: Message | sendNewChatBoxType | MessageSend;
-};
-
-const makeName = (name: string, to: string) => {
-  return [name, to].sort().join("_");
 };
 
 const ChatContext = createContext<ContextType>({
@@ -75,24 +60,6 @@ const ChatProvider = (props: any) => {
   const [chatBoxes, setChatBoxes] = useState<chatBoxType[]>([]);
   const [friend, setFriend] = useState<string>("");
   const [startChat] = useMutation(CREATE_CHATBOX_MUTATION as any);
-  const [sendMessage] = useMutation(CREATE_MESSAGE_MUTATION as any);
-  // useEffect(() => {
-  //   try {
-  //     subscribeToMore({
-  //       document: MESSAGE_SUBSCRIPTION as any,
-  //       variables: { from: me, to: friend },
-  //       updateQuery: (prev, { subscriptionData }) => {
-  //         if (!subscriptionData.data) return prev;
-  //         const newMessage = subscriptionData.data.message.message;
-  //         return {
-  //           chatBox: {
-  //             messages: [...prev.chatBox.messages, newMessage],
-  //           },
-  //         };
-  //       },
-  //     });
-  //   } catch (e) {}
-  // }, [subscribeToMore]);
   useEffect(() => {
     if (signedIn) {
       localStorage.setItem(LOCALSTORAGE_KEY, me);
@@ -128,9 +95,6 @@ const ChatProvider = (props: any) => {
         setMe,
         setSignedIn,
         setChatBoxes,
-        // sendMessage,
-        // addChatBox,
-        // clearMessages,
         displayStatus,
         startChat,
       }}

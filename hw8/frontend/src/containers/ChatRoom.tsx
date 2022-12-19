@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Input, InputRef } from "antd";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useMutation, useQuery, useSubscription } from "@apollo/client";
+import { useMutation, useQuery, useSubscription, useLazyQuery } from "@apollo/client";
 import React from "react";
 import { useChat } from "./hooks/useChat";
 import Title from "../components/Title";
@@ -54,10 +54,7 @@ const ChatRoom = ({ me }: ChatRoomProps) => {
   const bodyref = useRef<InputRef>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [addPost] = useMutation(CREATE_MESSAGE_MUTATION as any);
-  // const { loading, error, data, subscribeToMore } = useQuery(CHATBOX_QUERY as any);
-  const { data, loading } = useSubscription(MESSAGE_SUBSCRIPTION, {
-    variables: { user: me },
-  });
+  const [getbox, { loading, error, data, subscribeToMore }] = useLazyQuery(CHATBOX_QUERY as any);
   const initialChatBox = async (friend: string) => {
     const newChatBoxData: returnChatBoxType = await startChat({
       variables: { name1: me, name2: friend },
@@ -68,9 +65,10 @@ const ChatRoom = ({ me }: ChatRoomProps) => {
       messages: newChatBoxData.data.createChatBox.messages,
       children: <TabPane message={newChatBoxData.data.createChatBox.messages} me={me} />,
     };
-    console.log(newChatBoxData.data.createChatBox.messages);
+    console.log("initial chatbox");
     let newChatBoxes = [...chatBoxes, newChatBox];
     setChatBoxes(newChatBoxes);
+    console.log(chatBoxes);
   };
   useEffect(() => {
     console.log(data?.message);
@@ -84,26 +82,19 @@ const ChatRoom = ({ me }: ChatRoomProps) => {
       setChatBoxes(newChatBoxes);
     }
   }, [data]);
-  const handleSubscription = (chatBoxName: string) => {};
-  // useEffect(() => {
-  //   console.log("subscribe");
-  //   try {
-  //     subscribeToMore({
-  //       document: MESSAGE_SUBSCRIPTION,
-  //       variables: { from: me, to: friend },
-  //       updateQuery: (prev, { subscriptionData }) => {
-  //         if (!subscriptionData.data) return prev;
-  //         console.log(subscriptionData);
-  //         const newMessage = subscriptionData.data.message.message;
-  //         return {
-  //           chatBox: {
-  //             messages: [...prev.chatBox.messages, newMessage],
-  //           },
-  //         };
-  //       },
-  //     });
-  //   } catch (e) {}
-  // }, [subscribeToMore]);
+  useEffect(() => {
+    console.log("subscribe");
+    try {
+      subscribeToMore({
+        document: MESSAGE_SUBSCRIPTION,
+        variables: { user: me },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev;
+          return subscriptionData.data;
+        },
+      });
+    } catch (e) {}
+  }, [subscribeToMore]);
 
   const handleFormSubmit = useCallback(() => {
     console.log("handleFormSubmit");
@@ -136,8 +127,6 @@ const ChatRoom = ({ me }: ChatRoomProps) => {
       throw new Error(friend + "'s chat box has already opened.");
     } else {
       setChatBoxes([...chatBoxes, { label: friend, key: friend, children: <></>, messages: [] }]);
-      //setMsgSent(true);
-      // addChatBox({ me: me, to: friend });
       return friend;
     }
   };
@@ -175,9 +164,7 @@ const ChatRoom = ({ me }: ChatRoomProps) => {
               });
               return;
             }
-            //sendMessage({ name: me, to: friend, body: msg });
             handleFormSubmit();
-            // handleSendMessage();
             setBody("");
           }}
         ></Input.Search>

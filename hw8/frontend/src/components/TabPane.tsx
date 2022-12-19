@@ -24,7 +24,7 @@ const TabPane = ({ message, me }: TabPaneProps) => {
     <p style={{ color: "#ccc" }}>No messages...</p>
   ) : (
     <>
-      <div style={{ overflowY: "auto", position: "relative", height: "38vh" }}>
+      <div style={{ overflowY: "auto", position: "relative", height: "30vh" }}>
         {message.map(({ sender, body }, i) => {
           return (
             <div key={i}>

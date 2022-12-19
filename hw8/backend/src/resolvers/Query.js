@@ -3,7 +3,7 @@ const Query = {
     // console.log(ChatBoxModel);
     let box = await ChatBoxModel.findOne({ name });
     if (!box) box = await new ChatBoxModel({ name }).save();
-    return await box.populate("messages");
+    return await { message: { name: name, message: { sender: "", body: "" } } };
   },
 };
 export default Query;
