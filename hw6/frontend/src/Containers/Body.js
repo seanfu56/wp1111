@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -15,10 +15,15 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 
 import { useStyles } from "../hooks";
-import axios from "../api";
 import { useScoreCard } from "../hooks/useScoreCard";
 import { useQueryCard } from "../hooks/useQueryCard";
-
+import {
+  NEWSCORECARD_MUTATION,
+  DELETEALLSCORECARDS_MUTATION,
+  SCORECARD_NAME_QUERY,
+  SCORECARD_SUBJECT_QUERY,
+} from "../graphql";
+import { useMutation, useLazyQuery } from "@apollo/client";
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
@@ -47,6 +52,9 @@ const Body = () => {
 
   const { messages, addCardMessage, addRegularMessage, addErrorMessage } = useScoreCard();
   const { qmessages, qaddCardMessage, qaddRegularMessage, qaddErrorMessage } = useQueryCard();
+  const [name_query, { data: name_data }] = useLazyQuery(SCORECARD_NAME_QUERY);
+  const [subject_query, { data: subject_data }] = useLazyQuery(SCORECARD_SUBJECT_QUERY);
+  const [addPost] = useMutation(NEWSCORECARD_MUTATION);
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
   const [score, setScore] = useState(0);
@@ -69,32 +77,47 @@ const Body = () => {
   };
 
   const handleAdd = async () => {
-    const {
-      data: { message, card },
-    } = await axios.post("/card", {
-      name,
-      subject,
-      score,
+    const addPostReturn = await addPost({
+      variables: { name: name, subject: subject, score: Number(score) },
     });
-
-    if (!card) addErrorMessage("add", message);
-    else addCardMessage("add", message);
+    console.log(addPostReturn.data.newScoreCard);
+    addCardMessage("add", addPostReturn.data.newScoreCard);
   };
 
+  useEffect(() => {
+    console.log("name_data changed");
+    if (name_data === undefined) {
+      return;
+    }
+    if (name_data.getScoreCardsByName.length === 0) {
+      return;
+    }
+    const array = name_data.getScoreCardsByName.map(
+      (ele) => `Found card with name: (${ele.name}, ${ele.subject}, ${ele.score})`
+    );
+    addRegularMessage("query", ...array);
+  }, [name_data]);
+
+  useEffect(() => {
+    console.log("subject_data changed");
+    if (subject_data === undefined) {
+      return;
+    }
+    if (subject_data.getScoreCardsBySubject.length === 0) {
+      return;
+    }
+    const array = subject_data.getScoreCardsBySubject.map(
+      (ele) => `Found card with subject: (${ele.name}, ${ele.subject}, ${ele.score})`
+    );
+    addRegularMessage("query", ...array);
+  }, [subject_data]);
+
   const handleQuery = async () => {
-    const {
-      data: { messages, message },
-    } = await axios.get("/cards", {
-      params: {
-        type: queryType,
-        queryString,
-      },
-    });
-    console.log(messages);
-    if (messages.length === 0) {
-      addErrorMessage("query", message);
-    } else {
-      addRegularMessage("query", ...messages);
+    console.log("handle query");
+    if (queryType === "name") {
+      name_query({ variables: { name: queryString } });
+    } else if (queryType === "subject") {
+      subject_query({ variables: { subject: queryString } });
     }
   };
 
@@ -184,7 +207,7 @@ const Body = () => {
           <ContentPaper variant="outlined">
             {messages.map((m, i) =>
               m.property === "query" ? (
-                <Typography variant="body2" key={m + i} style={{ color: m.color }}>
+                <Typography variant="body2" key={i} style={{ color: m.color }}>
                   {m.message}
                 </Typography>
               ) : null

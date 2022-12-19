@@ -5,7 +5,8 @@ import Typography from "@material-ui/core/Typography";
 import axios from "../api";
 import { useScoreCard } from "../hooks/useScoreCard";
 import { useQueryCard } from "../hooks/useQueryCard";
-
+import { DELETEALLSCORECARDS_MUTATION } from "../graphql";
+import { useMutation } from "@apollo/client";
 const Wrapper = styled.section`
   display: flex;
   align-items: center;
@@ -19,14 +20,11 @@ const Wrapper = styled.section`
 const Header = () => {
   const { addRegularMessage, clearMessage } = useScoreCard();
   const { qaddRegularMessage, qclearMessage } = useQueryCard();
-
+  const [delPost] = useMutation(DELETEALLSCORECARDS_MUTATION);
   const handleClear = async () => {
-    const {
-      data: { message },
-    } = await axios.delete("/cards");
+    const message = await delPost();
     console.log(message);
-    clearMessage(message);
-    //addRegularMessage(message);
+    clearMessage(message.data.deleteAllScoreCards);
   };
 
   return (

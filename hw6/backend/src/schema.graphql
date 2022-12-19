@@ -1,0 +1,15 @@
+type Query {
+  getScoreCardsByName(name: String!): [ScoreCard]!
+  getScoreCardsBySubject(subject: String!): [ScoreCard]!
+}
+
+type Mutation {
+  newScoreCard(name: String!, subject: String!, score: Int!): String!
+  deleteAllScoreCards: String!
+}
+
+type ScoreCard {
+  name: String!
+  subject: String!
+  score: Int!
+}

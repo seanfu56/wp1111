@@ -25,7 +25,6 @@ const ScoreCardProvider = (props) => {
   };
 
   const addRegularMessage = (property, ...ms) => {
-    console.log(property);
     setMessages([...messages, ...ms.map((m) => makeMessage(m, REGULAR_MESSAGE_COLOR, property))]);
   };
 
