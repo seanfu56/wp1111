@@ -55,19 +55,19 @@ function Home() {
   }, [subscribeToMore]);
 
   // TODO 6.5 Logic of subscription
-  useEffect(() => {
-    subscribeToMore({
-      document: ITEM_DELETED_SUBSCRIPTION,
-      updateQuery: (prev, { subscriptionData }) => {
-        console.log(subscriptionData);
-        if (!subscriptionData.data) return prev;
-        const id = subscriptionData.data.id;
-        return {
-          items: prev.items.filter((item) => item.id !== id),
-        };
-      },
-    });
-  }, [subscribeToMore]);
+  // useEffect(() => {
+  //   subscribeToMore({
+  //     document: ITEM_DELETED_SUBSCRIPTION,
+  //     updateQuery: (prev, { subscriptionData }) => {
+  //       console.log(subscriptionData);
+  //       if (!subscriptionData.data) return prev;
+  //       const id = subscriptionData.data.id;
+  //       return {
+  //         items: prev.items.filter((item) => item.id !== id),
+  //       };
+  //     },
+  //   });
+  // }, [subscribeToMore]);
   // TODO 6.5 End
 
   if (loading) return <p>Loading...</p>;
