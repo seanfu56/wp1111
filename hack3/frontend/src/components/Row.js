@@ -1,21 +1,19 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from "react";
+import PropTypes from "prop-types";
 
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
-import dayjs from '../utils/day';
-import ItemFormModal from './ItemFormModal';
+import dayjs from "../utils/day";
+import ItemFormModal from "./ItemFormModal";
 
-function Row({
-  item, updateItem, deleteItem,
-}) {
+function Row({ item, updateItem, deleteItem }) {
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
 
@@ -40,9 +38,18 @@ function Row({
   };
 
   const handleSubmitEdit = (formData) => {
+    console.log("formdata", {
+      id: item.id,
+      name: formData.name,
+      amount: formData.amount,
+      category: formData.category,
+      date: formData.date,
+      description: formData.description,
+    });
     updateItem({
       variables: {
         // TODO 4 Use `updateItem` and pass the correct variables
+        input: { id: item.id, ...formData },
 
         // TODO End
         onError: (err) => {
@@ -56,16 +63,16 @@ function Row({
   return (
     <>
       <TableRow data-cy="item" key={item.id} hover>
-        <TableCell onClick={onCollapse} sx={{ cursor: 'pointer' }}>
+        <TableCell onClick={onCollapse} sx={{ cursor: "pointer" }}>
           <Typography>{item.date && dayjs(item.date).calendar()}</Typography>
         </TableCell>
-        <TableCell data-cy="item-name" onClick={onCollapse} sx={{ cursor: 'pointer' }}>
+        <TableCell data-cy="item-name" onClick={onCollapse} sx={{ cursor: "pointer" }}>
           <Typography>{item.name}</Typography>
         </TableCell>
         <TableCell data-cy="item-amount" align="right">
           <Typography>{item.amount && `$${item.amount}`}</Typography>
         </TableCell>
-        <TableCell data-cy="item-category" onClick={onCollapse} sx={{ cursor: 'pointer' }}>
+        <TableCell data-cy="item-category" onClick={onCollapse} sx={{ cursor: "pointer" }}>
           <Typography>{item.category?.toLowerCase()}</Typography>
         </TableCell>
         <TableCell align="right" data-cy="item-edit">
@@ -81,10 +88,10 @@ function Row({
         <TableCell colSpan={5} style={{ paddingTop: 0, paddingBottom: 0 }}>
           <Collapse in={descriptionOpen} timeout="auto" unmountOnExit>
             <div className="p-4">
-              <Typography gutterBottom>
-                Descriptions
+              <Typography gutterBottom>Descriptions</Typography>
+              <Typography variant="subtitle2" sx={{ textIndent: "1rem" }}>
+                {item.description || "No description"}
               </Typography>
-              <Typography variant="subtitle2" sx={{ textIndent: '1rem' }}>{item.description || 'No description'}</Typography>
             </div>
           </Collapse>
         </TableCell>
