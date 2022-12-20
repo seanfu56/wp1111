@@ -16,7 +16,7 @@ async function connect() {
       useUnifiedTopology: true,
     })
     .then((res) => console.log("mongo db connection created"));
-
+  dataInit();
   mongoose.connection.on("error", console.error.bind(console, "connection error:"));
   // TODO 1 End
 }
