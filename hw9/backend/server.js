@@ -7,9 +7,6 @@ import router from "./routes/scoreCard";
 import bodyParser from "body-parser";
 import path from "path";
 
-import express from "express";
-import cors from "cors";
-
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
