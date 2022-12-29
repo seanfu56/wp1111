@@ -29,9 +29,9 @@ app.use(bodyParser.json());
 db.connect();
 const dbs = mongoose.connection;
 dbs.on("error", (err) => console.log(err));
-dbs.once("open", async () => {
-  await db.deleteAllScoreCards();
-});
+// dbs.once("open", async () => {
+//   await db.deleteAllScoreCards();
+// });
 
 app.use("/api", router);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
