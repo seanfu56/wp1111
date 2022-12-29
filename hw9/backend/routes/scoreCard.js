@@ -20,6 +20,7 @@ router.post("/card", async (req, res) => {
   });
 });
 router.get("/cards", async (req, res) => {
+  console.log("router get cards");
   const name = req.query.queryString;
   const type = req.query.type;
   let data;
